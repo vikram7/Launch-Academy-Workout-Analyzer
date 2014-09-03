@@ -1,10 +1,10 @@
 class Workout
   attr_reader :id, :exercises, :date
 
-  def initialize(data)
-    @id = data.first
-    @exercises = data[1][:exercises]
-    @date = data[1][:date]
+  def initialize(id, date)
+    @id = id
+    @date = date
+    @exercises = []
   end
 
   def type
@@ -12,12 +12,15 @@ class Workout
     count_cardio = 0
     count_other = 0
     total = 0
+
     exercises.each do |each_exercise|
-      count_strength += 1 if each_exercise[:category] == "strength"
-      count_cardio += 1 if each_exercise[:category] == "cardio"
-      count_other += 1 if each_exercise[:category] == "other"
+      count_strength += 1 if each_exercise.category == "strength"
+      count_cardio += 1 if each_exercise.category == "cardio"
+      count_other += 1 if each_exercise.category == "other"
     end
+
     total = count_strength + count_cardio + count_other
+
     if count_cardio / total.to_f >= 0.5
       return "cardio"
     elsif count_strength / total.to_f >= 0.5
@@ -33,18 +36,18 @@ class Workout
     low_mult = 5
     all_other_mult = 6
     total = 0
-    exercises.each do |each_exercise|
 
-      if each_exercise[:category] == "strength"
-        total += each_exercise[:duration_in_min] * low_mult
-      elsif each_exercise[:intensity] == "high"
-        total += each_exercise[:duration_in_min] * high_mult
-      elsif each_exercise[:intensity] == "medium"
-        total += each_exercise[:duration_in_min] * medium_mult
-      elsif each_exercise[:intensity] == "low"
-        total += each_exercise[:duration_in_min] * low_mult
+    exercises.each do |exercise|
+      if exercise.category == "strength"
+        total += exercise.duration * low_mult
+      elsif exercise.intensity == "high"
+        total += exercise.duration * high_mult
+      elsif exercise.intensity == "medium"
+        total += exercise.duration * medium_mult
+      elsif exercise.intensity == "low"
+        total += exercise.duration * low_mult
       else
-        total += each_exercise[:duration_in_min] * all_other_mult
+        total += exercise.duration * all_other_mult
       end
     end
     total
@@ -53,7 +56,7 @@ class Workout
   def duration
     total = 0
     exercises.each do |each_exercise|
-      total += each_exercise[:duration_in_min]
+      total += each_exercise.duration
     end
     total
   end
