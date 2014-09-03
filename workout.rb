@@ -8,26 +8,15 @@ class Workout
   end
 
   def type
-    count_strength = 0
-    count_cardio = 0
-    count_other = 0
-    total = 0
+    total = exercises.count
+    type = 'other'
 
-    exercises.each do |each_exercise|
-      count_strength += 1 if each_exercise.category == "strength"
-      count_cardio += 1 if each_exercise.category == "cardio"
-      count_other += 1 if each_exercise.category == "other"
+    exercise_categories.each do |category|
+      category_percentage = exercises_for_category(category).count / total.to_f
+      type = category if category_percentage >= 0.5
     end
 
-    total = count_strength + count_cardio + count_other
-
-    if count_cardio / total.to_f >= 0.5
-      return "cardio"
-    elsif count_strength / total.to_f >= 0.5
-      return "strength"
-    else
-      return "other"
-    end
+    type
   end
 
   def total_calories_burned
@@ -50,6 +39,7 @@ class Workout
         total += exercise.duration * all_other_mult
       end
     end
+
     total
   end
 
@@ -59,5 +49,13 @@ class Workout
       total += each_exercise.duration
     end
     total
+  end
+
+  def exercises_for_category(category)
+    exercises.find_all { |e| e.category == category }
+  end
+
+  def exercise_categories
+    exercises.map { |e| e.category }.uniq
   end
 end
