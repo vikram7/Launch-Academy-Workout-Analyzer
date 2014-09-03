@@ -1,7 +1,8 @@
 class Workout
-  attr_reader :array_of_exercises
-  def initialize(array_of_exercises)
-    @array_of_exercises = array_of_exercises
+  attr_reader :exercises
+
+  def initialize(exercises)
+    @exercises = exercises
   end
 
   def total_type
@@ -9,7 +10,7 @@ class Workout
     count_cardio = 0
     count_other = 0
     total = 0
-    array_of_exercises.each do |each_exercise|
+    exercises.each do |each_exercise|
       count_strength += 1 if each_exercise[:category] == "strength"
       count_cardio += 1 if each_exercise[:category] == "cardio"
       count_other += 1 if each_exercise[:category] == "other"
@@ -30,7 +31,7 @@ class Workout
     low_mult = 5
     all_other_mult = 6
     total = 0
-    array_of_exercises.each do |each_exercise|
+    exercises.each do |each_exercise|
 
       if each_exercise[:category] == "strength"
         total += each_exercise[:duration_in_min] * low_mult
@@ -49,7 +50,7 @@ class Workout
 
   def total_duration
     total = 0
-    array_of_exercises.each do |each_exercise|
+    exercises.each do |each_exercise|
       total += each_exercise[:duration_in_min]
     end
     total
