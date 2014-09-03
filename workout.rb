@@ -1,27 +1,22 @@
 class Workout
-  attr_reader :array_of_exercises
-  def initialize(array_of_exercises)
-    @array_of_exercises = array_of_exercises
+  attr_reader :id, :exercises, :date
+
+  def initialize(id, date)
+    @id = id
+    @date = date
+    @exercises = []
   end
 
-  def total_type
-    count_strength = 0
-    count_cardio = 0
-    count_other = 0
-    total = 0
-    array_of_exercises.each do |each_exercise|
-      count_strength += 1 if each_exercise[:category] == "strength"
-      count_cardio += 1 if each_exercise[:category] == "cardio"
-      count_other += 1 if each_exercise[:category] == "other"
+  def type
+    total = exercises.count
+    type = 'other'
+
+    exercise_categories.each do |category|
+      category_percentage = exercises_for_category(category).count / total.to_f
+      type = category if category_percentage >= 0.5
     end
-    total = count_strength + count_cardio + count_other
-    if count_cardio / total.to_f >= 0.5
-      return "cardio"
-    elsif count_strength / total.to_f >= 0.5
-      return "strength"
-    else
-      return "other"
-    end
+
+    type
   end
 
   def total_calories_burned
@@ -30,28 +25,37 @@ class Workout
     low_mult = 5
     all_other_mult = 6
     total = 0
-    array_of_exercises.each do |each_exercise|
 
-      if each_exercise[:category] == "strength"
-        total += each_exercise[:duration_in_min] * low_mult
-      elsif each_exercise[:intensity] == "high"
-        total += each_exercise[:duration_in_min] * high_mult
-      elsif each_exercise[:intensity] == "medium"
-        total += each_exercise[:duration_in_min] * medium_mult
-      elsif each_exercise[:intensity] == "low"
-        total += each_exercise[:duration_in_min] * low_mult
+    exercises.each do |exercise|
+      if exercise.category == "strength"
+        total += exercise.duration * low_mult
+      elsif exercise.intensity == "high"
+        total += exercise.duration * high_mult
+      elsif exercise.intensity == "medium"
+        total += exercise.duration * medium_mult
+      elsif exercise.intensity == "low"
+        total += exercise.duration * low_mult
       else
-        total += each_exercise[:duration_in_min] * all_other_mult
+        total += exercise.duration * all_other_mult
       end
+    end
+
+    total
+  end
+
+  def duration
+    total = 0
+    exercises.each do |each_exercise|
+      total += each_exercise.duration
     end
     total
   end
 
-  def total_duration
-    total = 0
-    array_of_exercises.each do |each_exercise|
-      total += each_exercise[:duration_in_min]
-    end
-    total
+  def exercises_for_category(category)
+    exercises.find_all { |e| e.category == category }
+  end
+
+  def exercise_categories
+    exercises.map { |e| e.category }.uniq
   end
 end
