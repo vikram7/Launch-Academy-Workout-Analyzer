@@ -1,11 +1,13 @@
 class Workout
-  attr_reader :exercises
+  attr_reader :id, :exercises, :date
 
-  def initialize(exercises)
-    @exercises = exercises
+  def initialize(data)
+    @id = data.first
+    @exercises = data[1][:exercises]
+    @date = data[1][:date]
   end
 
-  def total_type
+  def type
     count_strength = 0
     count_cardio = 0
     count_other = 0
@@ -48,7 +50,7 @@ class Workout
     total
   end
 
-  def total_duration
+  def duration
     total = 0
     exercises.each do |each_exercise|
       total += each_exercise[:duration_in_min]

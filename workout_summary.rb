@@ -29,19 +29,10 @@ def load_workout_data(filename)
   workouts
 end
 
-puts "ID | DATE       | TYPE     | DURATION | CALORIES_BURNED"
-puts "---|------------|----------|----------|----------------"
+workouts = []
 
-load_workout_data('workouts.csv').each do |each_workout_day|
-  my_workout = Workout.new(each_workout_day.last[:exercises])
-
-  a = each_workout_day.first
-  b = each_workout_day.last[:date]
-  c = my_workout.total_type
-  d = my_workout.total_duration
-  e = my_workout.total_calories_burned
-
-
-  print a.to_s + "  | " + b.to_s + "  | " + c.to_s + "  | " + d.to_s + "  | " + e.to_s + "\n"
+load_workout_data('workouts.csv').each do |workout_data|
+  workouts << Workout.new(workout_data)
 end
 
+tp(workouts, :id, :date, :type, :duration, :total_calories_burned)
